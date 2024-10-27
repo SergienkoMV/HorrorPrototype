@@ -40,6 +40,7 @@ public class MenuController : MonoBehaviour
     [Tooltip("—сылка на список Skybox")]
     [SerializeField] Material [] _skyboxes;
 
+    public SaveSettingsSriptable SaveSettings;
 
     private float _moveSpeed;
     private float _runSpeed;
@@ -57,27 +58,48 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
-
-        _moveSpeed = FindAnyObjectByType<FirstPersonController>().MoveSpeed;
+        if (SaveSettings)
+        {
+            _moveSpeed = SaveSettings.MoveSpeed;
+            //_moveSpeed = FindAnyObjectByType<FirstPersonController>().MoveSpeed;
+            _runSpeed = SaveSettings.RunSpeed;
+            _rotationSpeed = SaveSettings.RotationSpeed * 10;
+            _jumpForce = SaveSettings.JumpForce * 10;
+            _SunLightForce = SaveSettings.SunLightForce;
+            _lightFlashlight = SaveSettings.LightFlashlight;
+            _widthLightFlashlight = SaveSettings.WidthLightFlashlight;
+            _rangeLightFlashlight = SaveSettings.RangeLightFlashlight;
+            _FogDensity = SaveSettings.FogDensity;
+            //_runSpeed = FindAnyObjectByType<FirstPersonController>().SprintSpeed;
+            //_rotationSpeed = FindAnyObjectByType<FirstPersonController>().RotationSpeed * 10;
+            //_jumpForce = FindAnyObjectByType<FirstPersonController>().JumpHeight * 10;
+            //_SunLightForce = GameObject.Find("Directional Light").GetComponent<Light>().intensity;
+            //_lightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().intensity;
+            //_widthLightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().spotAngle;
+            //_rangeLightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().range;
+            //_FogDensity = RenderSettings.fogDensity;
+        }
+        else
+        {
+            _moveSpeed = FindAnyObjectByType<FirstPersonController>().MoveSpeed;
+            _runSpeed = FindAnyObjectByType<FirstPersonController>().SprintSpeed;
+            _rotationSpeed = FindAnyObjectByType<FirstPersonController>().RotationSpeed * 10;
+            _jumpForce = FindAnyObjectByType<FirstPersonController>().JumpHeight * 10;
+            _SunLightForce = GameObject.Find("Directional Light").GetComponent<Light>().intensity;
+            _lightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().intensity;
+            _widthLightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().spotAngle;
+            _rangeLightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().range;
+            _FogDensity = RenderSettings.fogDensity;
+        }
         _textMoveSpeed.text = (getMoveSpeed()).ToString();
-        _runSpeed = FindAnyObjectByType<FirstPersonController>().SprintSpeed;
         _textRunSpeed.text = (getRunSpeed()).ToString();
-        _rotationSpeed = FindAnyObjectByType<FirstPersonController>().RotationSpeed * 10;
         _textRotationSpeed.text = getRotationSpeed().ToString();
-        _jumpForce = FindAnyObjectByType<FirstPersonController>().JumpHeight * 10;
         _textJumpForce.text = getJumpForce().ToString();
-        _SunLightForce = GameObject.Find("Directional Light").GetComponent<Light>().intensity;
         _textSunLightForce.text = (getSunLightForce()).ToString();
-        _lightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().intensity;
         _textLightFlashlight.text = (getLightFlashlight()).ToString();
-        _widthLightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().spotAngle;
         _textWidthLightFlashlight.text = (getWidthLightFlashlight()).ToString();
-        _rangeLightFlashlight = GameObject.Find("LightFlashlight").GetComponent<Light>().range;
         _textRangeLightFlashlight.text = (getRangeLightFlashlight()).ToString();
-        _FogDensity = RenderSettings.fogDensity;
         _textFogDensity.text = (getFogDensity()).ToString();
-
-
 
         //_textRotationSpeed.text = ((int)(getRotationSpeed() * 100)).ToString();
         //_textJumpForce.text = ((int)(getJumpForce() * 100)).ToString();
@@ -180,6 +202,7 @@ public class MenuController : MonoBehaviour
     {
         _moveSpeed = (float)x.value;
         _textMoveSpeed.text = (getMoveSpeed()).ToString();
+        SaveSettings.MoveSpeed = _moveSpeed;
     }
 
     public float getMoveSpeed()
@@ -192,6 +215,7 @@ public class MenuController : MonoBehaviour
     {
         _runSpeed = (float)x.value;
         _textRunSpeed.text = (getRunSpeed()).ToString();
+        SaveSettings.RunSpeed = _runSpeed;
     }
 
     public float getRunSpeed()
@@ -204,6 +228,7 @@ public class MenuController : MonoBehaviour
     {
         _rotationSpeed = (float)x.value;
         _textRotationSpeed.text = (getRotationSpeed()).ToString();
+        SaveSettings.RotationSpeed = _rotationSpeed;
     }
 
     public float getRotationSpeed()
@@ -216,6 +241,7 @@ public class MenuController : MonoBehaviour
     {
         _jumpForce = (float)x.value;
         _textJumpForce.text = (getJumpForce()).ToString();
+        SaveSettings.JumpForce = _jumpForce;
     }
 
     public float getJumpForce()
@@ -229,6 +255,7 @@ public class MenuController : MonoBehaviour
         _SunLightForce = (float)x.value;
         _textSunLightForce.text = (getSunLightForce()).ToString();
         GameObject.Find("Directional Light").GetComponent<Light>().intensity = _SunLightForce;
+        SaveSettings.SunLightForce = _SunLightForce;
     }
 
     public float getSunLightForce()
@@ -243,7 +270,7 @@ public class MenuController : MonoBehaviour
         _lightFlashlight = (float)x.value;
         _textLightFlashlight.text = (getLightFlashlight()).ToString();
         GameObject.Find("LightFlashlight").GetComponent<Light>().intensity = _lightFlashlight;
-
+        SaveSettings.LightFlashlight = _lightFlashlight;
     }
 
     public float getLightFlashlight()
@@ -258,6 +285,7 @@ public class MenuController : MonoBehaviour
         _widthLightFlashlight = (float)x.value;
         _textWidthLightFlashlight.text = (getWidthLightFlashlight()).ToString();
         GameObject.Find("LightFlashlight").GetComponent<Light>().spotAngle = _widthLightFlashlight;
+        SaveSettings.WidthLightFlashlight = _widthLightFlashlight;
 
     }
 
@@ -273,6 +301,7 @@ public class MenuController : MonoBehaviour
         _rangeLightFlashlight = (float)x.value;
         _textRangeLightFlashlight.text = (getRangeLightFlashlight()).ToString();
         GameObject.Find("LightFlashlight").GetComponent<Light>().range = _rangeLightFlashlight;
+        SaveSettings.RangeLightFlashlight = _rangeLightFlashlight;
 
     }
 
@@ -288,6 +317,7 @@ public class MenuController : MonoBehaviour
         _FogDensity = (float)x.value;
         _textFogDensity.text = (getFogDensity()).ToString();
         RenderSettings.fogDensity = _FogDensity;
+        SaveSettings.FogDensity = _FogDensity;
     }
 
     public float getFogDensity()
