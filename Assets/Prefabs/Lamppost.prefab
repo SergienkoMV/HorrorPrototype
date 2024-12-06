@@ -50,9 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d6bca8bc6a0bd648986e4d8d69f3714, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sparks: {fileID: 0}
-  _spotLight: {fileID: 0}
-  _spotLight2: {fileID: 0}
+  _sparks: {fileID: 8160042992403465816}
+  _spotLight: {fileID: 2754759203439763839}
+  _spotLight2: {fileID: 7672679564767200743}
   _maxActiveTime: 0.5
 --- !u!65 &321473410366977186
 BoxCollider:

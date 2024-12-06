@@ -98,9 +98,17 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
-		}
 
-		private void Start()
+            if (!Mouse.current.enabled)
+            {
+
+                InputSystem.EnableDevice(Mouse.current);
+
+            }
+
+        }
+
+        private void Start()
 		{
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
@@ -281,7 +289,7 @@ namespace StarterAssets
 
         private void OnTriggerEnter(Collider other)
 		{
-            Debug.Log("play sound");
+            //Debug.Log("play sound");
             if (other.gameObject.GetComponent<SoundTrigger>())
 			{
 				other.GetComponent<SoundTrigger>().StartSound();

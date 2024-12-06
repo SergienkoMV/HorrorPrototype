@@ -63,8 +63,8 @@ public class MenuController : MonoBehaviour
             _moveSpeed = SaveSettings.MoveSpeed;
             //_moveSpeed = FindAnyObjectByType<FirstPersonController>().MoveSpeed;
             _runSpeed = SaveSettings.RunSpeed;
-            _rotationSpeed = SaveSettings.RotationSpeed * 10;
-            _jumpForce = SaveSettings.JumpForce * 10;
+            _rotationSpeed = SaveSettings.RotationSpeed /** 10*/;
+            _jumpForce = SaveSettings.JumpForce /** 10*/;
             _SunLightForce = SaveSettings.SunLightForce;
             _lightFlashlight = SaveSettings.LightFlashlight;
             _widthLightFlashlight = SaveSettings.WidthLightFlashlight;

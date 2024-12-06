@@ -20,7 +20,7 @@ public class LeshiyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Leshy.AddForce(0, 0, -LeshySpeed, ForceMode.Impulse);
+        //Leshy.AddForce(0, 0, -LeshySpeed, ForceMode.Impulse);
         //transform.position.z += 10;
         //this.gameObject.GetComponent<AudioSource>().Play();
     }
