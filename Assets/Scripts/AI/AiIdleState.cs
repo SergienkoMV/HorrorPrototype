@@ -18,7 +18,7 @@ public class AiIdleState : AiState
     {
         //проверить, что игра не на паузе и игрок жив
         Vector3 playerDirection = agent.playerTransform.position - agent.transform.position;
-        Debug.Log(playerDirection.magnitude);
+        //Debug.Log(playerDirection.magnitude);
         if (playerDirection.magnitude < agent.config.distanceListening)
         {
             //вероятно стоит получить направление, но возможно это нужно сделать в начале следующего метода

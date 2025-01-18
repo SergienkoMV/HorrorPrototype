@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+using static UnityEditor.Progress;
 #endif
 
 namespace StarterAssets
@@ -56,6 +57,12 @@ namespace StarterAssets
         [Tooltip("HandPlace for item")]
         public GameObject HandPlace;
 
+		[Tooltip("Inventory places")]
+		[SerializeField] private GameObject[] _itemsInInventory;
+
+        [Header("Camera")]
+        [SerializeField] private Camera _camera;
+
         // cinemachine
         private float _cinemachineTargetPitch;
 
@@ -69,9 +76,12 @@ namespace StarterAssets
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
 
-	
+		private Usable _oldUsableObject;
+
+		//private GameObject[] _inventory;
+
 #if ENABLE_INPUT_SYSTEM
-		private PlayerInput _playerInput;
+        private PlayerInput _playerInput;
 #endif
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
@@ -121,6 +131,9 @@ namespace StarterAssets
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
+
+			//_itemsInInventory = new GameObject[4];
 		}
 
 		private void Update()
@@ -128,6 +141,7 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+			CheckRay();
 		}
 
 		private void LateUpdate()
@@ -219,7 +233,78 @@ namespace StarterAssets
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 		}
 
-		private void JumpAndGravity()
+        private void CheckRay()
+		{
+
+			Vector3 Ray_start_position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+
+            var ray = _camera.ScreenPointToRay(Ray_start_position);
+            if (Physics.Raycast(ray, out var hit, 30f))
+			{
+				var usableObject = hit.transform.GetComponent<Usable>();
+				var takebleItem = hit.transform.GetComponent<TakebleItem>();
+
+                if (usableObject)
+				{
+                    if (_oldUsableObject != usableObject)
+                    {
+                        usableObject.Interaction(2f);
+						FindAnyObjectByType<MenuController>().PrintNameObject(usableObject.Name);
+						if (_oldUsableObject)
+						{
+                            _oldUsableObject.Interaction(0f);
+                            _oldUsableObject = null;
+                        }
+						_oldUsableObject = usableObject;
+                    }
+
+					if (takebleItem && Input.GetKeyDown(KeyCode.E))
+					{
+                        for (int i = 0; i < _itemsInInventory.Length; i++)
+                        {
+                            if (_itemsInInventory[i] != null)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                _itemsInInventory[i] = takebleItem.gameObject;
+                                takebleItem.gameObject.SetActive(false);
+                                return;
+                            }
+                            print("Not enought place");
+                        }
+
+                    } 
+					else if (Input.GetKeyDown(KeyCode.E))
+					{
+						var Door = hit.transform.GetComponent<Door>();
+
+						if (Door) 
+						{
+							Door.Interaction(_itemsInInventory);
+                        }
+						print("Interaction");
+
+                    }
+                }
+				else if (_oldUsableObject)
+				{
+                    _oldUsableObject.Interaction(0f);
+                    _oldUsableObject = null;
+                    FindAnyObjectByType<MenuController>().PrintNameObject("");
+                }
+			}
+			else if (_oldUsableObject)
+			{
+				_oldUsableObject.Interaction(0f);
+                _oldUsableObject = null;
+                FindAnyObjectByType<MenuController>().PrintNameObject("");
+            }
+		}
+
+
+        private void JumpAndGravity()
 		{
 			if (Grounded)
 			{
@@ -298,21 +383,40 @@ namespace StarterAssets
 
 			if (other.GetComponent<TakebleThing>())
 			{
-				other.transform.SetParent(HandPlace.transform, true);
+				//other.transform.SetParent(HandPlace.transform, true);
 				//other.transform.position = Vector3.zero;
 				//other.gameObject.GetComponent<TakebleThing>().TakedObject();
 
             }
 
-
+			if (other.GetComponent<TakebleItem>())
+			{
+				//print(other.gameObject.GetComponent<TakebleItem>().Name);
+				//GameObject takedItem = other.gameObject;
+				//for (int i = 0; i < _itemsInInventory.Length; i++)
+				//{
+    //                if (_itemsInInventory[i] != null)
+    //                {
+    //                    continue;
+    //                }
+    //                else
+    //                {
+    //                    takedItem.transform.SetParent(HandPlace.transform, true);
+    //                    takedItem.transform.localPosition = Vector3.zero;
+    //                    _itemsInInventory[i] = takedItem;
+				//		return;
+    //                }
+                    //print("Not enought place");
+                //}
+			}
 		}
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.GetComponent<Door>())
-            {
-                gameObject.GetComponent<Door>().OpenDoor();
-            }
-        }
+        //private void OnCollisionEnter(Collision collision)
+        //{
+        //    if (collision.gameObject.GetComponent<Door>())
+        //    {
+        //        gameObject.GetComponent<Door>().UseObject();
+        //    }
+        //}
     }
 }

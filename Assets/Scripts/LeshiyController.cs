@@ -8,7 +8,7 @@ public class LeshiyController : MonoBehaviour
 {
     [SerializeField] AudioSource LeshiyVoice;
     [SerializeField] GameObject LeshyBody;
-    [SerializeField] float LeshySpeed;
+    //[SerializeField] private float LeshySpeed;
     [SerializeField] GameObject LeshyDeformationSystem;
     Rigidbody Leshy;
     // Start is called before the first frame update
@@ -32,7 +32,7 @@ public class LeshiyController : MonoBehaviour
         {
             LeshiyVoice.Play();
             GroundLeshiy(2);
-            LeshySpeed = 0;
+            //LeshySpeed = 0;
             //Quaternion playerSide =  //other.gameObject.transform.position * transform.position;
             //gameObject.transform.rotation = Quaternion.identity;
             

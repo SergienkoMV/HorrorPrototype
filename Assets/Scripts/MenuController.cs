@@ -52,9 +52,21 @@ public class MenuController : MonoBehaviour
     private float _rangeLightFlashlight;
     private float _FogDensity;
     private int _FPS;
+    private string _objectDiscription;
+    private string _message;
 
-    int count = 0;
+    //int count = 0;
     float deltaTime = 0;
+
+    public void PrintNameObject(string text)
+    {
+        _objectDiscription = text;
+    }
+
+    public void OutputMessage(string text)
+    {
+        _message = text;
+    }
 
     private void Start()
     {
@@ -134,6 +146,8 @@ public class MenuController : MonoBehaviour
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
         float fps = 1.0f / deltaTime;
         GameObject.Find("FPS").GetComponent<TextMeshProUGUI>().text = "FPS:" + Mathf.Ceil(fps).ToString();
+        GameObject.Find("ObjectDiscription").GetComponent<TextMeshProUGUI>().text = _objectDiscription;
+        GameObject.Find("Message").GetComponent<TextMeshProUGUI>().text = _message;
     }
 
     //private void FixedUpdate()

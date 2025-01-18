@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: SaveSettings
   m_EditorClassIdentifier: 
   MoveSpeed: 10
-  RunSpeed: 0
-  RotationSpeed: 0
-  JumpForce: 0
+  RunSpeed: 20
+  RotationSpeed: 10
+  JumpForce: 10
   JumpTorque: 0
   SunLightForce: 0
-  LightFlashlight: 0
+  LightFlashlight: 0.37
   WidthLightFlashlight: 0
   RangeLightFlashlight: 0
   FogDensity: 0
