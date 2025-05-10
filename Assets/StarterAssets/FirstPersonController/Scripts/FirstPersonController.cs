@@ -147,7 +147,7 @@ namespace StarterAssets
 		private void LateUpdate()
 		{
 			//Вращаем камерой, только если игра не на паузе
-			if (!GameManager.FindAnyObjectByType<GameManager>().getPause())
+			if (!GameManager.FindAnyObjectByType<GameManager>().IsPause)
 			{
                 CameraRotation();
             }
@@ -241,8 +241,8 @@ namespace StarterAssets
             var ray = _camera.ScreenPointToRay(Ray_start_position);
             if (Physics.Raycast(ray, out var hit, 30f))
 			{
-				var usableObject = hit.transform.GetComponent<Usable>();
-				var takebleItem = hit.transform.GetComponent<TakebleItem>();
+
+                var usableObject = hit.transform.GetComponent<Usable>();
 
                 if (usableObject)
 				{
@@ -258,35 +258,46 @@ namespace StarterAssets
 						_oldUsableObject = usableObject;
                     }
 
-					if (takebleItem && Input.GetKeyDown(KeyCode.E))
-					{
-                        for (int i = 0; i < _itemsInInventory.Length; i++)
-                        {
-                            if (_itemsInInventory[i] != null)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                _itemsInInventory[i] = takebleItem.gameObject;
-                                takebleItem.gameObject.SetActive(false);
-                                return;
-                            }
-                            print("Not enought place");
-                        }
-
-                    } 
-					else if (Input.GetKeyDown(KeyCode.E))
-					{
-						var Door = hit.transform.GetComponent<Door>();
-
-						if (Door) 
+					if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        var takebleItem = hit.transform.GetComponent<TakebleItem>();
+                        var door = hit.transform.GetComponent<Door>();
+						var readNote = hit.transform.GetComponent<ReadNote>();
+						if (takebleItem)
 						{
-							Door.Interaction(_itemsInInventory);
+							for (int i = 0; i < _itemsInInventory.Length; i++)
+							{
+								if (_itemsInInventory[i] != null)
+								{
+									continue;
+								}
+								else
+								{
+									_itemsInInventory[i] = takebleItem.gameObject;
+									takebleItem.gameObject.SetActive(false);
+									return;
+								}
+								print("Not enought place");
+							}
+                            print("Choose takeable");
                         }
-						print("Interaction");
-
-                    }
+						else if (door)
+						{
+							//var Door = hit.transform.GetComponent<Door>();
+							door.Interaction(_itemsInInventory);
+                            print("Choose door ");
+                        }
+						else if (readNote)
+						{
+							readNote.Interaction(5);
+							readNote.ShowText();
+                            print("Choose Notes");
+                        }
+						else
+						{
+							print("Choose nothing ");
+						}
+                    } 
                 }
 				else if (_oldUsableObject)
 				{

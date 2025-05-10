@@ -24,6 +24,28 @@ public class GameManager : MonoBehaviour
      
     private void Awake() => _inputMapping = new StarterAssetsInputs();
 
+    public bool IsPause
+    {
+        get
+        {
+            return _pause;
+        }
+        set
+        {
+            _pause = value;
+            if (_pause)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Time.timeScale = 1f;
+            }
+        }
+    }
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -89,29 +111,6 @@ public class GameManager : MonoBehaviour
                 _flashlight.gameObject.SetActive(true);
             }      
         }
-    }
-
-    //Установка/снятие паузы
-    public void setPause()
-    {
-        if (_pause)
-        {
-            _pause = false;
-            Cursor.lockState = CursorLockMode.Locked;
-            Time.timeScale = 1f;
-        }
-        else
-        {
-            _pause = true;
-            Cursor.lockState = CursorLockMode.None;
-            Time.timeScale = 0f;
-        }
-    }
-
-    //Статус паузы
-    public bool getPause()
-    {
-        return _pause;
     }
 
     //Загрузка сцены

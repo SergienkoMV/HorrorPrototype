@@ -2,23 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TakebleItem : MonoBehaviour, IItem
+public class TakebleItem : Usable, IItem
 {
     private string _name;
     //[SerializeField] private GameObject _connectedObject;
 
-    public string Name {  
-        get 
-        { 
-            return _name; 
-        }
-        set
-        {
-            _name = value;
-        }
-    }
-
-    
     void Start()
     {
         Name = this.name;

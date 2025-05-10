@@ -7,9 +7,21 @@ using UnityEngine;
 public class Usable : MonoBehaviour
 {
     [SerializeField] private string _name;
-    private Outline _outline;
+    public Outline _outline;
 
-    public string Name { get { return _name; } }
+    //public string Name { get { return _name; } }
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+        set
+        {
+            _name = value;
+        }
+    }
+
 
     void Start()
     {
@@ -24,5 +36,6 @@ public class Usable : MonoBehaviour
     public void Interaction(float width)
     {
         _outline.OutlineWidth = width;
+        print(width);
     }
 }
