@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TakebleItem : Usable, IItem
+public class TakebleItem : IItem
 {
-    private string _name;
+    //private string _name;
     //[SerializeField] private GameObject _connectedObject;
 
     void Start()
     {
-        Name = this.name;
+        Name = _name;
     }
 
     //void Update()

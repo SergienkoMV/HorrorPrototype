@@ -248,11 +248,11 @@ namespace StarterAssets
 				{
                     if (_oldUsableObject != usableObject)
                     {
-                        usableObject.Interaction(2f);
+                        usableObject.OutlineWidth = 2f;
 						FindAnyObjectByType<MenuController>().PrintNameObject(usableObject.Name);
 						if (_oldUsableObject)
 						{
-                            _oldUsableObject.Interaction(0f);
+                            _oldUsableObject.OutlineWidth = 0f;
                             _oldUsableObject = null;
                         }
 						_oldUsableObject = usableObject;
@@ -289,7 +289,7 @@ namespace StarterAssets
                         }
 						else if (readNote)
 						{
-							readNote.Interaction(5);
+							readNote.OutlineWidth = 5f;
 							readNote.ShowText();
                             print("Choose Notes");
                         }
@@ -301,14 +301,14 @@ namespace StarterAssets
                 }
 				else if (_oldUsableObject)
 				{
-                    _oldUsableObject.Interaction(0f);
+                    _oldUsableObject.OutlineWidth = 0f;
                     _oldUsableObject = null;
                     FindAnyObjectByType<MenuController>().PrintNameObject("");
                 }
 			}
 			else if (_oldUsableObject)
 			{
-				_oldUsableObject.Interaction(0f);
+				_oldUsableObject.OutlineWidth = 0f;
                 _oldUsableObject = null;
                 FindAnyObjectByType<MenuController>().PrintNameObject("");
             }
