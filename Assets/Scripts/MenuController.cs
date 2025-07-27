@@ -55,8 +55,10 @@ public class MenuController : MonoBehaviour
     private string _objectDiscription;
     private string _message;
 
+
     //int count = 0;
     float deltaTime = 0;
+
 
     public void PrintNameObject(string text)
     {
@@ -166,7 +168,8 @@ public class MenuController : MonoBehaviour
     public void ResumeGame()
     {
         _mainMenu.gameObject.SetActive(false); //Закрываем окно меню
-        GameManager.FindObjectOfType<GameManager>().setPause(); //Снимаем с паузы    
+        GameManager.FindObjectOfType<GameManager>().IsPause = false;//setPause(); //Снимаем с паузы    
+        //IsPlaying = true;
     }
 
     //Открытие основного меню
@@ -177,8 +180,8 @@ public class MenuController : MonoBehaviour
         {
             _mainMenu.gameObject.SetActive(true);
             //_settingsMenu.gameObject.SetActive(false);
-            GameManager.FindObjectOfType<GameManager>().setPause();
-
+            GameManager.FindObjectOfType<GameManager>().IsPause = true;
+            //IsPlaying = true;
         }
         //Выход из подменю
         else if (_mainMenu.gameObject.activeSelf)

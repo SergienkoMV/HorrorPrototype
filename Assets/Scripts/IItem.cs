@@ -2,22 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-interface IItem
+public class IItem : Usable
 {
-    private static string _name;
-    
+    //public string _name;
+   // public string Name { get { return _name; } }
 
-    public string Name { get { return _name; } }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    //public string Name
+    //{
+    //    get
+    //    {
+    //        return this._name;
+    //    }
+    //    set
+    //    {
+    //        _name = value;
+    //    }
+    //}
 }
