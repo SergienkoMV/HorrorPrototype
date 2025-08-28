@@ -263,7 +263,8 @@ namespace StarterAssets
                         var takebleItem = hit.transform.GetComponent<TakebleItem>();
                         var door = hit.transform.GetComponent<Door>();
 						var readNote = hit.transform.GetComponent<ReadNote>();
-						if (takebleItem)
+						var UseDoor = hit.transform.GetComponent<DoorManager>();
+						if (takebleItem != null)
 						{
 							for (int i = 0; i < _itemsInInventory.Length; i++)
 							{
@@ -292,6 +293,11 @@ namespace StarterAssets
 							readNote.OutlineWidth = 5f;
 							readNote.ShowText();
                             print("Choose Notes");
+                        }
+						else if (UseDoor)
+						{
+							UseDoor.UseDoor(_itemsInInventory);
+
                         }
 						else
 						{
