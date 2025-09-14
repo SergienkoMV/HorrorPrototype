@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,9 @@ using UnityEngine;
 public class Usable : MonoBehaviour
 {
     [SerializeField] protected string _name;
+    [SerializeField] private MonoBehaviour _linkedScript;
     private Outline _outline;
+    private IExecute _executableScript;
 
     public string Name { get { return this._name; } set { _name = value; }}
     public float OutlineWidth { get { return _outline.OutlineWidth; } set { _outline.OutlineWidth = value; }}
@@ -16,6 +19,7 @@ public class Usable : MonoBehaviour
     {
         _outline = GetComponent<Outline>();
         OutlineWidth = 0;
+        _executableScript = _linkedScript as IExecute;
     }
 
     void Start()
@@ -35,4 +39,9 @@ public class Usable : MonoBehaviour
     //    smField.OutlineWidth = width;
     //    print(width);
     //}
+
+    public void Use()
+    {
+        _executableScript.Execute();
+    }
 }

@@ -3,7 +3,9 @@ using UnityEditor;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+using static UnityEditor.Experimental.GraphView.GraphView;
 using static UnityEditor.Progress;
+using static UnityEngine.Rendering.DebugUI;
 #endif
 
 namespace StarterAssets
@@ -54,17 +56,17 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
-        [Tooltip("HandPlace for item")]
-        public GameObject HandPlace;
+		[Tooltip("HandPlace for item")]
+		public GameObject HandPlace;
 
 		[Tooltip("Inventory places")]
 		[SerializeField] private GameObject[] _itemsInInventory;
 
-        [Header("Camera")]
-        [SerializeField] private Camera _camera;
+		[Header("Camera")]
+		[SerializeField] private Camera _camera;
 
-        // cinemachine
-        private float _cinemachineTargetPitch;
+		// cinemachine
+		private float _cinemachineTargetPitch;
 
 		// player
 		private float _speed;
@@ -78,14 +80,19 @@ namespace StarterAssets
 
 		private Usable _oldUsableObject;
 
+		private bool _playerHidden = false;
+
+		public bool PlayerHiden { get => _playerHidden; set => _playerHidden = value; }
+
 		//private GameObject[] _inventory;
 
 #if ENABLE_INPUT_SYSTEM
-        private PlayerInput _playerInput;
+		private PlayerInput _playerInput;
 #endif
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
 		private GameObject _mainCamera;
+		private CharacterController _player;
 
 		private const float _threshold = 0.01f;
 
@@ -93,11 +100,11 @@ namespace StarterAssets
 		{
 			get
 			{
-				#if ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM
 				return _playerInput.currentControlScheme == "KeyboardMouse";
-				#else
+#else
 				return false;
-				#endif
+#endif
 			}
 		}
 
@@ -109,21 +116,22 @@ namespace StarterAssets
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
 
-            if (!Mouse.current.enabled)
-            {
+			if (!Mouse.current.enabled)
+			{
 
-                InputSystem.EnableDevice(Mouse.current);
+				InputSystem.EnableDevice(Mouse.current);
 
-            }
+			}
 
-        }
+		}
 
-        private void Start()
+		private void Start()
 		{
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM
 			_playerInput = GetComponent<PlayerInput>();
+			_player = GetComponent<CharacterController>();
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
@@ -149,8 +157,8 @@ namespace StarterAssets
 			//Вращаем камерой, только если игра не на паузе
 			if (!GameManager.FindAnyObjectByType<GameManager>().IsPause)
 			{
-                CameraRotation();
-            }
+				CameraRotation();
+			}
 
 		}
 
@@ -169,8 +177,8 @@ namespace StarterAssets
 				//Don't multiply mouse input by Time.deltaTime
 				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                RotationSpeed = FindAnyObjectByType<MenuController>().getRotationSpeed() / 10;
-                _cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
+				RotationSpeed = FindAnyObjectByType<MenuController>().getRotationSpeed() / 10;
+				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
 				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
 
 				// clamp our pitch rotation
@@ -186,10 +194,10 @@ namespace StarterAssets
 
 		private void Move()
 		{
-            // set target speed based on move speed, sprint speed and if sprint is pressed
-            MoveSpeed = FindAnyObjectByType<MenuController>().getMoveSpeed();
-            SprintSpeed = FindAnyObjectByType<MenuController>().getRunSpeed();
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+			// set target speed based on move speed, sprint speed and if sprint is pressed
+			MoveSpeed = FindAnyObjectByType<MenuController>().getMoveSpeed();
+			SprintSpeed = FindAnyObjectByType<MenuController>().getRunSpeed();
+			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -233,37 +241,43 @@ namespace StarterAssets
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 		}
 
-        private void CheckRay()
+		private void CheckRay()
 		{
 
 			Vector3 Ray_start_position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
 
-            var ray = _camera.ScreenPointToRay(Ray_start_position);
-            if (Physics.Raycast(ray, out var hit, 30f))
+			var ray = _camera.ScreenPointToRay(Ray_start_position);
+			if (Physics.Raycast(ray, out var hit, 30f))
 			{
 
-                var usableObject = hit.transform.GetComponent<Usable>();
+				var usableObject = hit.transform.GetComponent<Usable>();
 
-                if (usableObject)
+				if (usableObject)
 				{
-                    if (_oldUsableObject != usableObject)
-                    {
-                        usableObject.OutlineWidth = 2f;
+					if (_oldUsableObject != usableObject)
+					{
+						usableObject.OutlineWidth = 2f;
 						FindAnyObjectByType<MenuController>().PrintNameObject(usableObject.Name);
 						if (_oldUsableObject)
 						{
-                            _oldUsableObject.OutlineWidth = 0f;
-                            _oldUsableObject = null;
-                        }
+							_oldUsableObject.OutlineWidth = 0f;
+							_oldUsableObject = null;
+						}
 						_oldUsableObject = usableObject;
-                    }
+					}
 
 					if (Input.GetKeyDown(KeyCode.E))
-                    {
-                        var takebleItem = hit.transform.GetComponent<TakebleItem>();
-                        var door = hit.transform.GetComponent<Door>();
+					{
+						var takebleItem = hit.transform.GetComponent<TakebleItem>();
+						var usable = hit.transform.GetComponent<Usable>();
+						var door = hit.transform.GetComponent<Door>();
 						var readNote = hit.transform.GetComponent<ReadNote>();
 						var UseDoor = hit.transform.GetComponent<DoorManager>();
+						//if(_interactableItem != null)
+						//{
+						//	_interactableItem.Use();
+						//                      _interactableItem = null;
+						//                  }	
 						if (takebleItem != null)
 						{
 							for (int i = 0; i < _itemsInInventory.Length; i++)
@@ -278,50 +292,54 @@ namespace StarterAssets
 									takebleItem.gameObject.SetActive(false);
 									return;
 								}
-								print("Not enought place");
+								//print("Not enought place");
 							}
-                            print("Choose takeable");
-                        }
+							print("Choose takeable");
+						}
 						else if (door)
 						{
 							//var Door = hit.transform.GetComponent<Door>();
 							door.Interaction(_itemsInInventory);
-                            print("Choose door ");
-                        }
+							print("Choose door ");
+						}
 						else if (readNote)
 						{
 							readNote.OutlineWidth = 5f;
 							readNote.ShowText();
-                            print("Choose Notes");
-                        }
+							print("Choose Notes");
+						}
 						else if (UseDoor)
 						{
 							UseDoor.UseDoor(_itemsInInventory);
 
-                        }
+						}
+						else if (usable != null && !PlayerHiden)
+						{
+							usable.Use();
+						}
 						else
 						{
 							print("Choose nothing ");
 						}
-                    } 
-                }
+					}
+				}
 				else if (_oldUsableObject)
 				{
-                    _oldUsableObject.OutlineWidth = 0f;
-                    _oldUsableObject = null;
-                    FindAnyObjectByType<MenuController>().PrintNameObject("");
-                }
+					_oldUsableObject.OutlineWidth = 0f;
+					_oldUsableObject = null;
+					FindAnyObjectByType<MenuController>().PrintNameObject("");
+				}
 			}
 			else if (_oldUsableObject)
 			{
 				_oldUsableObject.OutlineWidth = 0f;
-                _oldUsableObject = null;
-                FindAnyObjectByType<MenuController>().PrintNameObject("");
-            }
+				_oldUsableObject = null;
+				FindAnyObjectByType<MenuController>().PrintNameObject("");
+			}
 		}
 
 
-        private void JumpAndGravity()
+		private void JumpAndGravity()
 		{
 			if (Grounded)
 			{
@@ -337,9 +355,9 @@ namespace StarterAssets
 				// Jump
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
-                    // the square root of H * -2 * G = how much velocity needed to reach desired height
-                    JumpHeight = FindAnyObjectByType<MenuController>().getJumpForce() / 10;
-                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					// the square root of H * -2 * G = how much velocity needed to reach desired height
+					JumpHeight = FindAnyObjectByType<MenuController>().getJumpForce() / 10;
+					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 				}
 
 				// jump timeout
@@ -389,14 +407,14 @@ namespace StarterAssets
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 		}
 
-        private void OnTriggerEnter(Collider other)
+		private void OnTriggerEnter(Collider other)
 		{
-            //Debug.Log("play sound");
-            if (other.gameObject.GetComponent<SoundTrigger>())
+			//Debug.Log("play sound");
+			if (other.gameObject.GetComponent<SoundTrigger>())
 			{
 				other.GetComponent<SoundTrigger>().StartSound();
-				
-            }
+
+			}
 
 			if (other.GetComponent<TakebleThing>())
 			{
@@ -404,7 +422,7 @@ namespace StarterAssets
 				//other.transform.position = Vector3.zero;
 				//other.gameObject.GetComponent<TakebleThing>().TakedObject();
 
-            }
+			}
 
 			if (other.GetComponent<TakebleItem>())
 			{
@@ -412,28 +430,35 @@ namespace StarterAssets
 				//GameObject takedItem = other.gameObject;
 				//for (int i = 0; i < _itemsInInventory.Length; i++)
 				//{
-    //                if (_itemsInInventory[i] != null)
-    //                {
-    //                    continue;
-    //                }
-    //                else
-    //                {
-    //                    takedItem.transform.SetParent(HandPlace.transform, true);
-    //                    takedItem.transform.localPosition = Vector3.zero;
-    //                    _itemsInInventory[i] = takedItem;
+				//                if (_itemsInInventory[i] != null)
+				//                {
+				//                    continue;
+				//                }
+				//                else
+				//                {
+				//                    takedItem.transform.SetParent(HandPlace.transform, true);
+				//                    takedItem.transform.localPosition = Vector3.zero;
+				//                    _itemsInInventory[i] = takedItem;
 				//		return;
-    //                }
-                    //print("Not enought place");
-                //}
+				//                }
+				//print("Not enought place");
+				//}
 			}
 		}
 
-        //private void OnCollisionEnter(Collision collision)
-        //{
-        //    if (collision.gameObject.GetComponent<Door>())
-        //    {
-        //        gameObject.GetComponent<Door>().UseObject();
-        //    }
-        //}
-    }
+		//private void OnCollisionEnter(Collision collision)
+		//{
+		//    if (collision.gameObject.GetComponent<Door>())
+		//    {
+		//        gameObject.GetComponent<Door>().UseObject();
+		//    }
+		//}
+
+		public void Teleport(Vector3 positionTo)
+		{
+			_player.enabled = false;
+			this.transform.position = positionTo;
+			_player.enabled = true;
+		}
+	}
 }
